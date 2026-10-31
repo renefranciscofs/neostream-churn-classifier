@@ -12,7 +12,8 @@ import sys
 
 from huggingface_hub import HfApi
 
-REPO_ID = os.environ.get("HF_REPO_ID", "SEU_USERNAME/neostream-churn-classifier")
+# O namespace (username) é descoberto automaticamente pelo token via whoami();
+# HF_REPO_ID permite customizar o nome do repo (ex.: "meu_usuario/outro-nome").
 ARQUIVO_MODELO = "pipeline_final_churn_v2.joblib"
 ARQUIVO_CARD = "model_card.md"
 
@@ -24,20 +25,28 @@ def main():
             "Defina HF_TOKEN (huggingface.co/settings/tokens -> Create token -> Write)."
         )
     api = HfApi(token=token)
-    api.create_repo(repo_id=REPO_ID, repo_type="model", exist_ok=True)
+
+    # o username vem do próprio token; HF_REPO_ID só para customizar o nome
+    usuario = api.whoami()["name"]
+    repo_id = os.environ.get("HF_REPO_ID", f"{usuario}/neostream-churn-classifier")
+    if "SEU_USERNAME" in repo_id:
+        sys.exit("Defina HF_REPO_ID com seu username real (ex.: renefranciscofs/...).")
+
+    print(f"Publicando em {repo_id} (usuário: {usuario}) ...")
+    api.create_repo(repo_id=repo_id, repo_type="model", exist_ok=True)
     api.upload_file(
         path_or_fileobj=ARQUIVO_MODELO,
         path_in_repo=ARQUIVO_MODELO,
-        repo_id=REPO_ID,
+        repo_id=repo_id,
         repo_type="model",
     )
     api.upload_file(
         path_or_fileobj=ARQUIVO_CARD,
         path_in_repo="README.md",  # o card vira o README do repo
-        repo_id=REPO_ID,
+        repo_id=repo_id,
         repo_type="model",
     )
-    print(f"Publicado: https://huggingface.co/{REPO_ID}")
+    print(f"Publicado: https://huggingface.co/{repo_id}")
 
 
 if __name__ == "__main__":
