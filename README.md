@@ -2,7 +2,7 @@
 
 Pipeline de classificação de churn para assinantes de um serviço de streaming fictício (NeoStream) — projeto da disciplina de Machine Learning (Instituto Infnet). O pipeline recebe dados crus e entrega a probabilidade de churn com um único artefato serializado, pronto para produção.
 
-**Modelo publicado no Hugging Face:** [huggingface.co/SEU_USERNAME/neostream-churn-classifier](https://huggingface.co/SEU_USERNAME/neostream-churn-classifier)
+**Modelo publicado no Hugging Face:** <https://huggingface.co/renefransfs/neostream-churn-classifier>
 
 ## Resultados
 
